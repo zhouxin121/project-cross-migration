@@ -1,0 +1,24 @@
+{
+  "project": "project-cross-migration",
+  "version": "2.5.0",
+  "release_date": "2026-09-29",
+  "description": "Project资料跨平台迁移免费版 — 五层模型（对话/记忆/人格/工具/环境）备份还原，候选提示模式：闸门候选检查点 + 环境候选路径 + 隐私副本扫描",
+  "author": "zhou",
+  "license": "MIT",
+  "files_checksum": {
+    "CHANGELOG.md": "1a65dda67d91610975ae7bf07589c2a6deab46bc9f5cb75590ad29abf3b17ebd",
+    "LICENSE": "9dd198758f84c254a57871976cc148b853eaa680ee45202b6460324327ad5694",
+    "README.md": "da528807e99167b62cd4737a12ee1311d4234729f885069e84a461e229da4435",
+    "SKILL.md": "a70df278c62bc69ecc7d822f1203e00cdaab9e22dc78b7738cd8e33bc185a1ae",
+    "examples/sample-raw.jsonl": "407cabe028c8662905febe459921fb88401fe2564710ebbb944ef28515e7474f",
+    "scripts/confirm_gate.py": "e59432775e71b7b8ad0d529e86b84f6c81e6d6b8369463e8a1f8bfb150ddd2de",
+    "scripts/desensitize.py": "9fd3dcba0ef3e91db694b304e6c8ec5eab3e1b58c8ec3d3d07698d1902083dce",
+    "scripts/environment_snapshot.py": "b2e8e8e1b24352f41b4590cd6c00c039636486e9780864c3f0354f1bda9f2926",
+    "scripts/preflight_check.py": "a23369160206594c46dee646cbc93ed8051d74a9c80e4fdae1c78f37a1cf6182",
+    "scripts/restore_dialogue.py": "bf828a7075d953d48f71d4d2944590c250814b5ed872e3d95b9609fbe950697d",
+    "scripts/validate_jsonl.py": "e5fb6daf0eb54522f9ad7a2c211b0f6ae3bd08e6e261ba3a4985416ec07586b5"
+  },
+  "requires": {
+    "python": ">=3.8"
+  }
+}
