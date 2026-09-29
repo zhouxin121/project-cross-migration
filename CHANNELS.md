@@ -8,8 +8,8 @@
 | GitHub Description | ✅ | 「Agent 项目资料跨框架迁移：五层备份还原…1418 条零丢失…MIT」 | 2026-09-29 |
 | GitHub Topics ×10 | ✅ | agent / agent-skills / claude-code / codex / pi / openclaw / migration / backup / skill / cross-platform | 2026-09-29 |
 | GitHub Release v2.5.0 | ✅ | https://github.com/zhouxin121/project-cross-migration/releases/tag/v2.5.0 · 资产 zip 回读 sha256 `8b33038a…` 与基线一致 | 2026-09-29 |
-| Gitee 镜像 | ✅ | https://gitee.com/aijineng/project-cross-migration-free | 2026-09-29 |
-| GitCode 镜像 | ✅ | https://gitcode.com/aijineng/project-cross-migration-free | 2026-09-29 |
+| Gitee 镜像 | ✅ | https://gitee.com/aijineng/project-cross-migration | 2026-09-29 |
+| GitCode 镜像 | ✅ | https://gitcode.com/aijineng/project-cross-migration | 2026-09-29 |
 | ClawHub 2.5.0 | ⏳ | 已受理待安全扫描（versionId k979wpqx…，页面 og 已翻 2.5.0）：https://clawhub.ai/zhouxin121/skills/project-cross-migration | 2026-09-29 |
 | SkillHub 2.5.1 | ⏳ | 待审（skillId=255784）：https://www.skillhub.cn/skills/project-cross-migration | 2026-09-29 |
 | npm / pi | ✅ | https://www.npmjs.com/package/project-cross-migration · registry 直读 version=2.5.0，pi.skills 字段已置（`pi install npm:project-cross-migration` 可用；本机 pi 未装，pi.dev 索引 24h 后复查） | 2026-09-29 |
