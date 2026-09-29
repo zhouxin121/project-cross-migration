@@ -4,6 +4,16 @@
 
 ---
 
+## 安装（按你的框架选一行）
+
+| 框架 | 命令 |
+|---|---|
+| OpenClaw / AutoClaw | [ClawHub 搜索 project-cross-migration](https://clawhub.ai/zhouxin121/skills/project-cross-migration) |
+| 任意框架（GitHub） | `git clone https://github.com/zhouxin121/project-cross-migration-free.git` 后将包目录放入你的 skills 目录 |
+| 离线安装 | 下载 [Release zip](https://github.com/zhouxin121/project-cross-migration-free/releases/tag/v2.5.0)（sha256 见 Release 说明）解压即用 |
+
+---
+
 ## 这个 Skill 解决什么问题
 
 先讲它干嘛的。你的 Agent 攒下的东西分好几层:对话原文、记忆、人格、工具、环境,一共五层。换框架或者换机器的麻烦,不在哪一层有多难,而在这五层存法各不一样,你得一层一层摸,顺序错了就白干。这个 Skill 把五层按一个跑通过的顺序排好了,你照着走就行。
