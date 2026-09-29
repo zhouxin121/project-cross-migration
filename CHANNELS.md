@@ -12,7 +12,7 @@
 | GitCode 镜像 | ✅ | https://gitcode.com/aijineng/project-cross-migration-free | 2026-09-29 |
 | ClawHub 2.5.0 | ⏳ | 已受理待安全扫描（versionId k979wpqx…，页面 og 已翻 2.5.0）：https://clawhub.ai/zhouxin121/skills/project-cross-migration | 2026-09-29 |
 | SkillHub 2.5.1 | ⏳ | 待审（skillId=255784）：https://www.skillhub.cn/skills/project-cross-migration | 2026-09-29 |
-| npm / pi | 🚫挂起 | 包已备好（.openclaw/tmp/npm-pcm，dry-run 结构通过）；**npm 未登录**（NPM_NO_AUTH），待老周 `npm login` | 2026-09-29 |
+| npm / pi | ✅ | https://www.npmjs.com/package/project-cross-migration · registry 直读 version=2.5.0，pi.skills 字段已置（`pi install npm:project-cross-migration` 可用；本机 pi 未装，pi.dev 索引 24h 后复查） | 2026-09-29 |
 | install-hermes.sh | ✅ | 全链路 curl\|bash 测过：11 文件落位 ~/.hermes/skills/project-cross-migration/；幂等重跑 9 个 ✓ | 2026-09-29 |
 | install-dsh.sh | ✅ | 本地测试通过：落位 ~/.dsh/skills/project-cross-migration/（SKILL.md/scripts/examples 齐全） | 2026-09-29 |
 | awesome PR：VoltAgent/awesome-openclaw-skills | ⏳ | PR #584：https://github.com/VoltAgent/awesome-openclaw-skills/pull/584 | 2026-09-29 |
