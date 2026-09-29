@@ -9,8 +9,8 @@
 | 框架 | 命令 |
 |---|---|
 | OpenClaw / AutoClaw | [ClawHub 搜索 project-cross-migration](https://clawhub.ai/zhouxin121/skills/project-cross-migration) |
-| 任意框架（GitHub） | `git clone https://github.com/zhouxin121/project-cross-migration-free.git` 后将包目录放入你的 skills 目录 |
-| 离线安装 | 下载 [Release zip](https://github.com/zhouxin121/project-cross-migration-free/releases/tag/v2.5.0)（sha256 见 Release 说明）解压即用 |
+| 任意框架（GitHub） | `git clone https://github.com/zhouxin121/project-cross-migration.git` 后将包目录放入你的 skills 目录 |
+| 离线安装 | 下载 [Release zip](https://github.com/zhouxin121/project-cross-migration/releases/tag/v2.5.0)（sha256 见 Release 说明）解压即用 |
 
 ---
 
