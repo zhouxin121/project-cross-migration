@@ -1,0 +1,11 @@
+# project-cross-migration 的 bundle patch 层。
+#
+# `dsh plugin add github:zhouxin121/project-cross-migration`（或本地路径）会读本文件，
+# 把这条 loader entry 插进 profile 树。插件市场只收声明了 `dsh.bundle` 且带本文件的包。
+#
+# 硬规则：`name` 必须与 package.json 的 `name` 完全一致；`id` 是 Cordis 插件 id。
+# 本插件把 skills/project-cross-migration/ 挂进技能目录：纯 Python 标准库脚本 + SKILL.md，
+# 无需覆写配置，没有阈值、端点、密钥。
+- insert:
+    - id: project-cross-migration
+      name: 'project-cross-migration'

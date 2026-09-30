@@ -1,0 +1,45 @@
+{
+  "name": "project-cross-migration",
+  "version": "2.5.1",
+  "description": "Agent 项目资料跨框架迁移：五层备份还原（对话/记忆/人格/工具/环境），Claude Code·Codex·pi·OpenClaw 实测 1418 条零丢失，纯 Python 标准库，MIT",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhouxin121/project-cross-migration.git"
+  },
+  "homepage": "https://jinengpu.chat/cross-migration.html",
+  "keywords": [
+    "agent",
+    "skill",
+    "pi-package",
+    "pi",
+    "migration",
+    "backup",
+    "conversation",
+    "openclaw",
+    "claude-code",
+    "cross-platform",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "cordis",
+    "hermes"
+  ],
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  },
+  "files": [
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "cordis.patch.yml",
+    "skills/"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
