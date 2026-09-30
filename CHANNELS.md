@@ -49,3 +49,15 @@ Pure Python stdlib, no dependencies. MIT, free.
 ## 知乎/CSDN 评论草稿（待批）
 
 > 换框架/换电脑时 Agent 的对话记录和记忆怎么搬？我们做了个开源工具 project-cross-migration（MIT，纯 Python 标准库）：五层备份还原（对话/记忆/人格/工具/环境），1418 条真实对话三平台迁移零丢失。Hermes 用户一行脚本装：`bash <(curl -s https://raw.githubusercontent.com/zhouxin121/project-cross-migration/main/scripts/install-hermes.sh)`
+
+## 搜索引擎收录（09-30 P1-8 完成）
+
+| 引擎 | 状态 | 证据 |
+|---|---|---|
+| Google | ✅ 全通 | GSC 网域验证（DNS TXT）+ sitemap「成功，已发现 4 个网页」 |
+| 必应 | ✅ 全通 | GSC 导入路径，验证+sitemap 一次到位 |
+| 百度 | ✅ 验证+手动提交完成 | meta codeva-Hgg1iJa23O；sitemap + 4 URL 手动推（实名生效后当日完成） |
+| 搜狗 | ⏳ 主体资质审查 | 1-7 工作日，过审后提交 sitemap |
+| 360 | ⛔ 平台改版 | sitemap 入口跳回添加页，等改版结束 |
+
+sitemap: https://www.jinengpu.chat/sitemap.xml（www 形态，与 canonical 一致）
