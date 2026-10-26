@@ -1,46 +1,39 @@
 ---
-name: project-cross-migration
-description: 完整备份并还原 Agent 的历史对话、记忆、人格、工具、环境，换框架、换电脑无感，新机器逐字还原即用。1418 条对话三平台多框架实测零损失。支持 Claude Code / Codex / WorkBuddy / OpenClaw 等主流框架本地部署
+name: "project-cross-migration"
+description: "跨平台迁移项目资料包（含对话原文、记忆、人格、工具与环境），支持分步确认闸门、JSONL 校验还原与可选脱敏"
+author: zhou
+license: MIT
+version: "2.4.2"
 keywords:
   - 项目迁移
   - 对话迁移
   - 跨平台迁移
   - 备份恢复
-  - 框架迁移
-  - Agent迁移
-  - 换电脑备份
-  - 对话备份
-  - 配置迁移
-  - 记忆迁移
-  - 换机迁移
-  - Claude Code
-  - Codex
+  - raw-conversation-backup
+  - conversation-migration
+  - project-cross-migration
+  - jsonl
+  - 数据自持
+  - 脱敏
+  - desensitize
   - 凭据管理
   - 环境快照
   - 确认闸门
-version: "2.5.0"
-compatible_with: [raw-conversation-backup v1.0.1, MindVault v3.1]
+  - 框架迁移
+  - Agent 迁移
 tested:
-  frameworks:
-    - { name: Marvis, version: "2.2.0" }
-    - { name: OpenClaw, version: "1.4" }
-    - { name: Claude Code, version: "1.0.36" }
-    - { name: Codex CLI, version: "0.98.0" }
-  verified: v2.5.0 六脚本整合验收 + 1418 条对话真实数据迁移还原实测（2026-09-12/09-15/09-18，macOS / Ubuntu / Windows 三平台 + Claude Code / OpenClaw 多框架，逐字对账 0 差异）+ 20 组回归用例 + 3 组一致性断言 X1-X3
-  notes: 所有实测值均为自使用环境真实数据；虚构测试数据仅用于演示 schema，非实测值
-  privacy:
-    conversation_md: 原文逐字保留，是真相源
-    round_json: 追加式分片，记录凭证哈希
-    credential_file: 真实 key 与敏感值留在私域，不随公开示例分发
-license: MIT
+  date: "2026-09-17"
+  os: macOS 15.8
+  platform: "WorkBuddy → OpenClaw/AutoClaw 实测"
+  verified: "v2.4.0 六脚本 23 组用例全量实测（全通过）：v2.3.0 的 20 组回归用例全数复跑通过（preflight 5 / confirm_gate 6 / environment_snapshot 2 / restore 2 / validate 2 / desensitize 3），另加 3 组一致性断言（X1 六脚本 VERSION 常量统一 2.4.0、X2 六脚本运行时可自报版本、X3 文档一致性：README 含 Python 3.8+ / SKILL version 2.4.0 / CHANGELOG 含 v2.4.0 条目 / 无残留 2.3.0 标注）"
 ---
 
 # 📦 项目资料跨平台迁移 · Project Cross Migration
 
-> **备份 → 搬运 → 还原：把项目资料（含 Agent 人格、工具与环境）完整迁移到新框架 / 新机器——逐字还原、恢复即用，不用向新机器从头解释你的项目。**
+> **备份 → 搬运 → 还原：把一个项目（含 Agent 人格、工具与环境）的全部资料完整搬到新框架 / 新机器；需要对外分享时才另出脱敏副本。**
 > 本 Skill 是 raw-conversation-backup v1.x 的**项目级升级版**：JSONL schema 完全兼容，范围覆盖项目工作状态全量，内置隐私分层规范与还原验收清单。
 > v2.1 修订：人格层按迁移模式恢复；新增工具与环境层。
-> **v2.2 修订（三项）**：① 脱敏从"迁移必经步骤"降级为**可选隐私配件**——私有备份/本机还原/换机默认完全不动原文，凭据随包、恢复即用；② 备份范围新增**框架环境快照** `_environment.json`；③ 运行入口强制**校验平台框架与任务名称**，备份目录以任务名命名并落显眼位置。
+> **v2.2 修订（三项）**：① 脱敏从"迁移必经步骤"降级为**可选分享配件**——私有备份/本机还原/换机默认完全不动原文，凭据随包、恢复即用；② 备份范围新增**框架环境快照** `_environment.json`；③ 运行入口强制**校验平台框架与任务名称**，备份目录以任务名命名并落显眼位置。
 > **v2.3 修订（三项）**：① 关键决策拆成**五道分步确认闸门**（G1 备份范围 / G2 内容抽检 / G3 落位确认 / G4 附件与成果 / G5 模型一致性）——逐道向用户确认、逐道落库，**未全确认拒绝打包**（`confirm_gate.py --check`）；② 备份默认落位改**桌面**；③ 环境快照新增 `source_model`，还原侧提示"建议用同一模型恢复"。
 > **v2.4 修订（整合收口）**：把 v2.2.1 测评修复与 v2.3.0 闸门改造做一次一致性对账——① 六个脚本版本号统一为 `2.4.0` 且**全部脚本均可自报版本**（`restore_dialogue.py` / `validate_jsonl.py` 此前无 VERSION 常量，现已补齐并在启动时打印）；② 平台边界、Python 运行要求等 v2.2.1 文档修复在 v2.3.0 中的回退项一并回归；③ 六脚本全量用例复跑（含新增一致性断言）通过。
 
@@ -63,6 +56,16 @@ license: MIT
 验收标准：**零丢失 + 可续聊 + 环境可复现**——新 Agent 读完资料包，用户不需要重新交代背景，也不需要重新摸索环境。
 
 > **人类层说明**：对 Agent 说「迁移项目」「对话搬家」「从备份恢复」即可。资料只走本地，不上传云端。
+
+## 快速故障对照表（三段式速查）
+
+| 症状 | 一线修复 | 仍失败兜底 |
+|---|---|---|
+| GitHub clone 卡死/超时 | 改用 codeload zip：`https://codeload.github.com/{owner}/{repo}/zip/refs/heads/{branch}` | SSH 公钥推送替代 HTTPS |
+| GitCode API 被 CloudWAF 拦截（418） | 改走 SSH 公钥通道 | 放弃 API，人工网页导出 |
+| zip 解压中文文件名乱码 | 用 Python zipfile 解压并做 cp437→UTF-8 修复 | 解压后按 NFD/NFC 归一化比对改名 |
+| 目标框架会话目录结构不符 | 先跑只读探测（列目录/采样一条消息）确认格式 | 降级为 raw 备份模式（保原始文件+索引说明） |
+| 还原后消息顺序异常 | 核对 `seq` 字段全局递增（G5 模型一致性同步核对） | 用 `raw` 字段（原文真相源）人工重排 |
 
 ## 一、迁移范围：五层模型 + 环境快照（v2.3 修订）
 
@@ -92,7 +95,7 @@ license: MIT
 
 - **打包内容**：`TOOLS.md`（工具约定与本地环境备注）、`skills/`（自装技能源目录）、`HEARTBEAT.md`（定时任务清单）、config 片段、`_environment.json`（框架环境快照）。
 - **还原纪律**：跨框架时工具格式/路径可能不兼容——逐项评估后恢复，不盲目覆盖目标框架的现有工具；技能类按目标框架的目录规范安装。
-- **凭据纪律（v2.2 重新划线，见 §二）**：私有迁移场景**凭据随包、恢复即用**，不再强制生成凭据缺口清单；只有**隐私副本**才脱敏并出 `_credentials_needed.md`。
+- **凭据纪律（v2.2 重新划线，见 §二）**：私有迁移场景**凭据随包、恢复即用**，不再强制生成凭据缺口清单；只有**分享包**才脱敏并出 `_credentials_needed.md`。
 
 ### 框架环境快照 `_environment.json`（v2.2 新增）
 
@@ -133,25 +136,25 @@ python3 scripts/environment_snapshot.py --task-name "<任务名称>" \
 ├── memory/                             # L2 项目记忆
 ├── persona/                            # L4 人格四件（SOUL/IDENTITY/USER/AGENTS）
 ├── tools/                              # L5 工具与环境（TOOLS.md、skills/、HEARTBEAT.md、config 片段）
-├── credentials/                        # 凭据文件（私有备份：随包，恢复即用；隐私副本：剔除）
+├── credentials/                        # 凭据文件（私有备份：随包，恢复即用；分享包：剔除）
 ├── output/                             # 项目产出（选迁）
 └── _share/                             # 仅"生成分享包"时出现：脱敏副本
-    └── _credentials_needed.md          # 仅隐私副本携带：被脱敏凭据项清单
+    └── _credentials_needed.md          # 仅分享包携带：被脱敏凭据项清单
 ```
 
 > **私有包与分享包的区别只有一处**：`credentials/` 与 `_share/`。私有迁移**不带 `_share/`**、凭据原样在包内；分享场景**不带 `credentials/`**、改出 `_share/` 与 `_credentials_needed.md`。
 
-## 二、隐私脱敏规范（v2.2 重定位：脱敏是可选隐私配件）
+## 二、隐私脱敏规范（v2.2 重定位：脱敏是可选分享配件）
 
-**原则（v2.2 重写）：默认不脱敏。** 私有备份、本机还原、自己换机这类"资料不出自己设备/账号"的场景，**原文照搬、凭据随包、恢复即用**——脱敏只服务于不想让明文凭据留在备份文件里的场景（隐私副本）。
+**原则（v2.2 重写）：默认不脱敏。** 私有备份、本机还原、自己换机这类"资料不出自己设备/账号"的场景，**原文照搬、凭据随包、恢复即用**——脱敏只服务于"资料要给到别人"的分享场景。
 
 | 场景 | 动作 | 凭据 | 凭据缺口清单 |
 |---|---|---|---|
 | 私有备份 / 本机还原 / 自己换机（**默认**） | **完全不脱敏**，原文照搬 | **随包**，恢复即用 | ❌ 不生成 |
-| 生成隐私副本（不想让凭据明文进备份文件） | 显式加 `--share`，另出 `_share/` 脱敏副本，**原包不出门** | 替为占位符，实体剔除 | ✅ `_credentials_needed.md` |
+| 生成分享包（发他人 / 发布示例 / 跨人传递） | 显式加 `--share`，另出 `_share/` 脱敏副本，**原包不出门** | 替为占位符，实体剔除 | ✅ `_credentials_needed.md` |
 | 还原进多人可见上下文（群聊 / 共享会话） | 结构化字段用脱敏值；raw 层不进共享上下文 | 不外传 | 视场景 |
 
-> **为什么改**：v2.1 把"脱敏 + 凭据永不入包 + 生成缺口清单"写成了通用流程，导致纯粹的私人换机备份也要倒腾一遍凭据、还原后还得手工回填——把隐私场景的约束误当成了迁移必经步骤（与 v2.0 的 L4 缺陷同类）。
+> **为什么改**：v2.1 把"脱敏 + 凭据永不入包 + 生成缺口清单"写成了通用流程，导致纯粹的私人换机备份也要倒腾一遍凭据、还原后还得手工回填——把分享场景的约束误当成了迁移必经步骤（与 v2.0 的 L4 缺陷同类）。
 > **安全边界不变**：一旦资料要离开你的私有环境，`_share/` 是唯一出口。
 
 脱敏规则（`scripts/desensitize.py` 实现，v2.2 起**必须显式 `--share`** 才执行）：
@@ -166,7 +169,7 @@ python3 scripts/environment_snapshot.py --task-name "<任务名称>" \
 
 - `<hash4>` = 原值 sha256 前 4 位：同一原值 → 同一占位符（可对账），不可逆。
 - **v2.2.0 修复 F9**：apikey / email / openid 三类正则原用 `\b` 词边界，在中文/全角字符紧邻敏感值时**静默失效**（Python 3 中 CJK 属 `\w`，`apikey是sk-xxxx` 里 `sk` 前取不到词边界）——现改为负向断言 `(?<![A-Za-z0-9])`。
-- 映射清单 `_desensitize_map.json`（占位符 ↔ 原值指纹）**只留本地**，不随隐私副本走。
+- 映射清单 `_desensitize_map.json`（占位符 ↔ 原值指纹）**只留本地**，不随分享包走。
 - 发布 Skill 文档 / 示例 / 截图时一律用虚构值；真实 key、open_id、本机路径不得出现在任何对外产物里。
 
 ## 三、JSONL 数据规范（raw-v1.0 兼容速查）
@@ -207,11 +210,11 @@ python3 scripts/preflight_check.py --task-name "<任务名称>" \
 
 | 闸门 | 确认什么 | 何时问 | 落库命令 |
 |---|---|---|---|
-| **G1 备份范围** | 要备份的对话 / Agent 名称，范围是会话级还是项目级 | 开工前（Step 1 之前） | `confirm_gate.py --gate G1 --set --value "<范围说明>"` |
-| **G3 落位确认** | 备份放哪（默认桌面；禁 agent 框架目录） | Step 2 建目录前 | `--gate G3 --set --value "<绝对路径>"` |
-| **G4 附件与成果** | 附件 / `output` 前期成果是否随包复制 | Step 3 导出时 | `--gate G4 --set --value "附件=是/否；output=是/否"` |
-| **G5 模型一致性** | 告知本次备份所用模型，恢复时建议同一模型 | Step 6.4 采快照后 | `--gate G5 --set`（不填 value 时自动取 `_environment.json` 的 `source_model`） |
-| **G2 内容抽检** | 备份完成后**随机抽 3 轮完整对话**给用户过目，确认内容如实、未串项目 | Step 6 校验后 | 先 `--sample --rounds 3`，用户过目后 `--gate G2 --set` |
+| 🔴 **G1 备份范围** | 要备份的对话 / Agent 名称，范围是会话级还是项目级 | 开工前（Step 1 之前） | `confirm_gate.py --gate G1 --set --value "<范围说明>"` |
+| 🔴 **G3 落位确认** | 备份放哪（默认桌面；禁 agent 框架目录） | Step 2 建目录前 | `--gate G3 --set --value "<绝对路径>"` |
+| 🔴 **G4 附件与成果** | 附件 / `output` 前期成果是否随包复制 | Step 3 导出时 | `--gate G4 --set --value "附件=是/否；output=是/否"` |
+| 🔴 **G5 模型一致性** | 告知本次备份所用模型，恢复时必须同一模型（G5 闸门核对 source_model） | Step 6.4 采快照后 | `--gate G5 --set`（不填 value 时自动取 `_environment.json` 的 `source_model`） |
+| 🔴 **G2 内容抽检** | 备份完成后**随机抽 3 轮完整对话**给用户过目，确认内容如实、未串项目 | Step 6 校验后 | 先 `--sample --rounds 3`，用户过目后 `--gate G2 --set` |
 
 ```bash
 # 查看五道闸门定义与当前状态（不指定 --backup-dir 时只显示定义）
@@ -290,10 +293,10 @@ python3 scripts/confirm_gate.py --backup-dir <备份目录> --check     # 未全
 2. `skills/` → 按目标框架的技能目录规范逐个安装；跨框架时先比对格式，不兼容的列清单告知用户；
 3. `HEARTBEAT.md` → 恢复定时任务清单；
 4. config / hooks / 权限规则 → **按 `_environment.json` 的路径清单**找回对应文件，按目标框架 config 结构合并，不整文件覆盖；
-5. **环境对照补齐（v2.2 新增，v2.3 扩模型一致性）**：按 `_environment.json` 逐项核对——框架版本、`tools` / `tools_missing`、OS 差异、模型配置项（模型名/端点），缺口列清单交给用户补齐；**`source_model` 提示**：本次备份由该模型完成，恢复时建议使用同一模型（减少语气/行为漂移，闸门 G5）；
+5. **环境对照补齐（v2.2 新增，v2.3 扩模型一致性）**：按 `_environment.json` 逐项核对——框架版本、`tools` / `tools_missing`、OS 差异、模型配置项（模型名/端点），缺口列清单交给用户补齐；**`source_model` 提示**：本次备份由该模型完成，恢复时使用同一模型（G5 闸门核对 source_model，减少语气/行为漂移）；
 6. **凭据交接（v2.2 改）**：
    - 私有迁移（默认）→ 包内 `credentials/` **恢复即用**，无需用户回填；如目标框架要求重新授权，按框架流程逐项确认；
-   - 隐私副本场景 → `_credentials_needed.md` 交给用户，逐项在目标框架配置（Skill 永不代填凭据）。
+   - 分享包场景 → `_credentials_needed.md` 交给用户，逐项在目标框架配置（Skill 永不代填凭据）。
 
 ### 还原完成验收清单（v2.3 扩至十五项，缺一不可）
 
@@ -334,7 +337,7 @@ python3 scripts/confirm_gate.py --backup-dir <备份目录> --check     # 未全
 | 11 | 还原稿太大读不动 | 分片读 / 按轮 grep 定位 |
 | 12 | 换机后人格/工具没跟上 | v2.0 的 L4 设计缺陷：确认用了 v2.1+，按 persona-follow 重做 Phase D/E |
 | 13 | **中文/全角紧跟 key 或邮箱，脱敏没生效** | v2.1.1 及更早的 `\b` 词边界在 CJK 旁失效；v2.2.0 已改负向断言 `(?<![A-Za-z0-9])`（F9） |
-| 14 | **备份目录找不到了 / 随 agent 卸载消失** | 备份被写进 agent 安装或数据目录，卸载被连坐删除。v2.2 起 preflight 硬性拦截；重做备份到桌面（`~/Desktop/<任务名>_<时间戳>/`） |
+| 14 | **备份目录找不到了 / 随 agent 卸载消失** | 备份被写进 agent 安装或数据目录，卸载被连坐删除。v2.2 起 preflight 硬性拦截；重做备份到 `~/AgentConversationBackup/` |
 | 15 | **换机后跑不起来（版本/依赖对不上）** | 未采 `_environment.json`，或采了没对照。按 Phase A 预读 + Phase E 第 5 步逐项补齐 |
 | 16 | **备份包内容串了项目 / 事后查不出搬错哪段** | 未走五道确认闸门就打包：范围没界定、内容也没抽检。v2.3 起打包前 `confirm_gate.py --check` 硬性拦截（rc=2）；重做时用 G1 界定范围、G2 抽检核对 |
 
@@ -346,9 +349,9 @@ python3 scripts/confirm_gate.py --backup-dir <备份目录> --check     # 未全
 | `scripts/confirm_gate.py` | **五道分步确认闸门（v2.3 新增）**：G1-G5 逐道落库 + 随机抽检 + 打包闸门（未全确认 rc=2 拒绝打包） |
 | `scripts/environment_snapshot.py` | **框架环境快照采集（v2.2 新增）**：生成 `_environment.json`，纯标准库、跨平台、只列路径与白名单键 |
 | `scripts/validate_jsonl.py` | schema + seq 连续性校验（还原前必跑） |
-| `scripts/desensitize.py` | **仅隐私副本场景**：生成 `_share/` 脱敏副本 + 本地映射清单（无 `--share` 直接拒绝） |
+| `scripts/desensitize.py` | **仅分享场景**：生成 `_share/` 脱敏副本 + 本地映射清单（无 `--share` 直接拒绝） |
 | `scripts/restore_dialogue.py` | 还原为可读对话稿 + 统计报告（v2.2 起附环境快照摘要） |
-| `examples/sample-raw.jsonl` | 脱敏后的示例行（虚构值） |
+| `examples/sample-desensitized.jsonl` | 脱敏后的示例行（虚构值） |
 
 ## 八、Agent 评估信息块
 
@@ -364,13 +367,13 @@ agent_evaluation:
     - timezone: "ISO 8601 +08:00"
     - seq: 全局递增，还原保序唯一依据
     - persona_modes: ["follow(默认)", "keep"]
-    - desensitize_moment: "仅隐私副本场景（默认不脱敏）"
-    - credentials: "私有包随包、恢复即用；隐私副本剔除 + _credentials_needed.md"
+    - desensitize_moment: "仅分享场景（默认不脱敏）"
+    - credentials: "私有包随包、恢复即用；分享包剔除 + _credentials_needed.md"
     - environment_snapshot: "_environment.json（框架版本/工具/系统/config-paths/模型配置白名单/source_model）"
     - confirm_gates: "G1 备份范围 / G2 内容抽检（随机 3 轮）/ G3 落位 / G4 附件与成果 / G5 模型一致性——逐道确认、逐道落库；打包前 --check 未全确认 rc=2"
   failure_paths:
     - 任务名称缺失就开工 → 停止并索要，勿用 backup/new/test 占位名
-    - 备份写进 agent 目录 → 卸载连坐删除；preflight 拦截，默认落位桌面 ~/Desktop/
+    - 备份写进 agent 目录 → 卸载连坐删除；preflight 拦截，改落 ~/AgentConversationBackup/
     - 沙箱读外部路径 → cp 进工作区，源不动
     - 按 mtime/时间戳排序 → 按文件名 rounds + 行序
     - 换机场景沿用 v2.0 的 L4 不覆盖 → 用 v2.1+ persona-follow
@@ -382,30 +385,33 @@ agent_evaluation:
     - 恢复时换模型 → 语气/行为漂移；按 _environment.json 的 source_model 用同一模型（闸门 G5）
   compat:
     baseline: "raw-conversation-backup v1.0.1 / MindVault v3.1"
-    upgrades: ["项目级范围", "五层模型", "人格按模式恢复", "L5 工具层", "框架环境快照", "脱敏降级为隐私配件", "凭据随包恢复即用", "运行入口校验", "备份目录规范（默认桌面）", "_manifest sha256", "五道分步确认闸门", "模型一致性", "验收清单 15 项"]
+    upgrades: ["项目级范围", "五层模型", "人格按模式恢复", "L5 工具层", "框架环境快照", "脱敏降级为分享配件", "凭据随包恢复即用", "运行入口校验", "备份目录规范（默认桌面）", "_manifest sha256", "五道分步确认闸门", "模型一致性", "验收清单 15 项"]
   v220_fixes:
     - "F9 中文紧邻 \\b 失效 → 负向断言 (?<![A-Za-z0-9])（apikey/email/openid）"
-    - "R1 脱敏误置为迁移必经 → 降级为可选隐私配件（--share 闸门，默认拒绝）"
+    - "R1 脱敏误置为迁移必经 → 降级为可选分享配件（--share 闸门，默认拒绝）"
     - "R2 备份范围缺环境 → 新增 _environment.json + environment_snapshot.py"
     - "R3 入口无校验 → 新增 preflight_check.py，任务名缺失停止、禁写 agent 目录"
   v230_changes:
     - "新增 confirm_gate.py：五道分步确认闸门（G1 范围 / G2 抽检 / G3 落位 / G4 附件 / G5 模型），逐道落库、打包 --check 未全确认 rc=2"
-    - "备份默认落位桌面 ~/Desktop（显眼位置，用户一眼能找到）"
+    - "备份默认落位 ~/AgentConversationBackup → ~/Desktop（显眼位置，用户一眼能找到）"
     - "environment_snapshot.py 增顶层 source_model；restore_dialogue.py 增 model_consistency_hint 提示"
     - "验收清单 14 → 15 项（+五道确认闸门全通过）；故障排查 15 → 16 条"
 ```
 
-## 九、装了之后你能做到什么（功能预览）
+## 九、免费版 vs 完整版差异说明
 
-| 能力 | 状态 | 说明 |
-|------|------|------|
-| L1 对话原文逐字备份 / 校验 / 还原 | ✅ | raw-v1.0 schema，JSONL 分片，seq 连续性校验 |
-| L2 项目记忆迁移 | ✅ | 项目快照 + 蒸馏不搬运，走可复现环境 |
-| L3-L5 人格 / 工具 / 环境层流程 | ✅ | Phase D/E 全流程（SKILL.md §五） |
-| 五道闸门状态管理 | ✅ | 候选检查点模式（见 scripts/confirm_gate.py） |
-| 环境快照采集 | ✅ | OS / Python / 配置探测（见 scripts/environment_snapshot.py） |
-| 隐私副本扫描 | ✅ | 基础模式集（见 scripts/desensitize.py） |
-| JSONL 校验 + 可读还原 | ✅ | validate / restore 双脚本 |
-| 入口校验 | ✅ | 框架匹配 + 任务名 + 落位（preflight_check.py） |
+| 维度 | 免费版 v2.4.2 | 完整版 v2.4.1 |
+|------|-------------|-------------|
+| 价格 | 免费（开源） | 付费（<https://wzyp.cn/item/p0r2lb>） |
+| L1 对话原文层 | ✅ | ✅ |
+| L2 记忆层 | ✅ | ✅ |
+| L3 人格层 | 🔒 | ✅ |
+| L4 工具层 | 🔒 | ✅ |
+| L5 环境层 | 🔒 | ✅ |
+| 确认闸门 | 🔒 | ✅ |
+| 环境快照 | 🔒 | ✅ |
+| 脱敏分享包 | 🔒 | ✅ |
+| 15 项验收 | 🔒 | ✅ |
 
-> 更多部署详情（各框架版本对照、逐层验证标准、时间与轮次优化）：**<https://jinengpu.chat/cross-migration.html>**
+获取完整版：<https://wzyp.cn/item/p0r2lb>
+

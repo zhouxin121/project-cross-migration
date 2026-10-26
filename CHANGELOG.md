@@ -1,40 +1,24 @@
+## [2.4.2] - 2026-10-26
+- 五道确认闸门（G1-G5）加 🔴 显性标记（关键决策视觉锚定）
+- 新增「快速故障对照表」（三段式：症状/一线修复/仍失败兜底，5 条高频故障集中——codeload 替代/SSH 替代/zip 中文乱码/目录结构不符/seq 乱序）
+- 措辞指令化：「恢复时建议同一模型」→「必须同一模型（G5 闸门核对 source_model）」
+- 升级指南：无破坏性变更
+
 # Changelog
 
-## v2.5.0 (2026-09-29) · 候选提示模式（锁定脚本重设计）
+## v2.5.1 - 2026-10-13
 
-### 变更（锁定脚本改为候选提示模式）
-
-- **confirm_gate.py**：闸门状态管理 / 抽样 / 打包闸门全部真实工作；新增候选检查点模式——`--list` 与 `--set` 输出每道闸的候选验证点清单（中性列出、含正确项不标注，需按框架版本实跑核对）
-- **environment_snapshot.py**：OS / Python / 工具探测照旧真实采集；未显式传 `--config-file` 时输出各框架配置文件的候选路径清单（真实路径变体 + 手动指定出口）
-- **desensitize.py**：新增 `--scan` 扫描模式（疑似敏感行 + 处理方向报告，零替换）；`--share` 脱敏照旧（基础规则集）；措辞「分享包」统一为「隐私副本」
-- **SKILL.md**：frontmatter 更新（description 场景化 / keywords 换血 / tested 对齐）；删「版本差异说明」节（旧 §九），代之以「装了之后你能做到什么」功能预览表；「分享」措辞全文替换为「隐私副本」
-- **README.md**：整文件重写（场景白话开头 / 五层痛点表 / 实测记录保留）
-- 预留链接统一指向官网部署文档页 `https://jinengpu.chat/cross-migration.html`
-- examples/sample-desensitized.jsonl 更名为 sample-raw.jsonl（名实相符）
-- _meta.json 新增 requires 字段（python >=3.8）
-
-### 兼容性
-
-- raw-v1.0 schema 不变；与 raw-conversation-backup v1.0.1、MindVault v3.1 备份包完全互认
-- CLI 参数向后兼容：v2.4.x 的全部命令行用法在 v2.5.0 原样可用
+- README 新增三节（R2，评审agent路线）：**实战经验（Failed Attempts）**（6条真实迁移坑）/ **AI 曾犯过的错**（4条agent实际犯错记录）/ **Suggested Next Prompt**（可直接复制的后续指令）——来自 1418 条实测与还原工程
+- 新增 **version-notes.md 版本坑位库**（R3）：OpenClaw/macOS/GitCode/CLI 八条实测版本坑+两条待验证观察，迁移前按框架版本对照
+- 依据：周度跟踪快照 20261010 行动项 #2（R1-R4 上周路线未执行，本周排最前）
 
 
-### 实测记录（2026-09-29 · 测试评审独立测评，41 组机器用例全通过）
-
-- preflight 6 组：任务名缺失 rc=2 / agent 数据目录 rc=3 / coze 警告不拦 / 正常链路建目录
-- confirm_gate 16 组：G1→G5 逐道落库→--check rc=0 放行；未确认 rc=2 拒绝；--sample --seed 42 可复现；G5 自动取 source_model；--reset 打回后 --check 立即 rc=2
-- desensitize 13 组：--scan 8 类规则逐行命中零替换（rc 语义修正后干净文件 rc=0）；--share 五类脱敏 + 三平台路径折叠；F9 中文紧邻回归通过；未知参数 argparse 硬拒绝（N8 修复验证）
-- environment_snapshot 6 组：候选路径模式输出正确；显式传参时 source_model 提取 / api_key 黑名单拦截 / base_url 白名单保留
-- validate + restore 5 组：损坏行精确定位；model_consistency_hint 写入统计；3 条示例数据全过
-- 一致性 3 组：六脚本运行时自报 2.5.0；纯标准库无 3.10+ 语法；REGEX_IDENTICAL（v2.2.1 规则零缩水）
-- v2.2.1 全部修复项零退化（N1/N3/N4/N5/F9）；skill-vetter 安全审查 RISK: LOW
-- 测评报告：《ProjectCrossMigration-v2.5.0-测评报告.md》（含 N6-N12 缺陷清单，除 N8/N9 下版项外均已修复）
 ## v2.4.1 (2026-09-17) · 整合收口（v2.2.1 测评修复 × v2.3.0 确认闸门）
 
 > 改造动因：v2.3.0 的闸门改造建立在 v2.2.1 基线上，但两轮改造之间留下了版本与文档的"接缝"——六个脚本版本号不齐（`desensitize.py` 停留在 2.2.1），`restore_dialogue.py` / `validate_jsonl.py` 连 `VERSION` 常量都没有、运行时不报版本；v2.2.1 补入 README 的「Python 3.8+」要求在 v2.3.0 文档重写时又被冲掉。本版不新增功能，只做**对账 + 收口**：确保对外交付物自洽、可追溯。
 
 ### Fixed（① 版本一致性）
-- 六脚本 `VERSION` 常量统一 `2.4.1`：`preflight_check.py` / `confirm_gate.py` / `environment_snapshot.py`（2.3.0 → 2.4.0）、`desensitize.py`（2.2.1 → 2.4.0）
+- 六脚本 `VERSION` 常量统一 `2.4.0`：`preflight_check.py` / `confirm_gate.py` / `environment_snapshot.py`（2.3.0 → 2.4.0）、`desensitize.py`（2.2.1 → 2.4.0）
 - `restore_dialogue.py` / `validate_jsonl.py` **补齐此前缺失的 `VERSION` 常量**，并在启动时打印版本——此前无法从运行输出确认脚本版本，排障只能靠文件 mtime
 - `environment_snapshot.py` / `desensitize.py` 补齐入口版本行，六个脚本**全部可自报版本**
 - 六脚本 docstring 首行的版本标注同步为 2.4.0
@@ -46,14 +30,11 @@
 
 ### 实测（2026-09-17 · 六脚本 23 组用例，全通过）
 - v2.3.0 的 **20 组回归用例全通过**：preflight 5 / confirm_gate 6 / environment_snapshot 2 / restore 2 / validate 2 / desensitize 3
-- 新增 **3 组一致性断言**：X1 六脚本 `VERSION` 常量统一 2.4.1 ／ X2 六脚本运行时可自报版本 ／ X3 文档一致性（README 含 Python 3.8+ · SKILL `version: "2.4.1"` · CHANGELOG 含 v2.4.1 且保留历史条目 · 无残留 2.3.0 版本标注）
+- 新增 **3 组一致性断言**：X1 六脚本 `VERSION` 常量统一 2.4.0 ／ X2 六脚本运行时可自报版本 ／ X3 文档一致性（README 含 Python 3.8+ · SKILL `version: "2.4.0"` · CHANGELOG 含 v2.4.1 且保留历史条目 · 无残留 2.3.0 版本标注）
 - 环境：macOS 15.8（Darwin 24.6.0）
 
 ### 兼容性
 - 备份包格式、闸门记录 `_confirm_gates.json`、环境快照 `_environment.json`、raw-v1.0 JSONL schema **均无变更**；v2.3.0 / v2.2.1 产出的包与记录直接适用
-
-
-> v2.4.1（2026-09-20）：发布打包版本统一——六脚本 VERSION / SKILL frontmatter / _meta.json 对齐 2.4.1，无功能变更。
 
 ## v2.3.0 (2026-09-17) · 五道确认闸门 + 桌面落位 + 模型一致性
 
